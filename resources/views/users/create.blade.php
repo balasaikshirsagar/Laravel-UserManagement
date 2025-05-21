@@ -107,9 +107,9 @@
                         </div>
 
                         <div class="flex items-center justify-between">
-                            <a type="submit" class="btn btn-success bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" id="submit-btn">
+                            <button type="submit" class="btn btn-success bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" id="submit-btn">
                                 Create User
-                            </a>
+                            </button>
                             <a href="{{ route('users.index') }}" class="btn btn-danger bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                                 Cancel
                             </a>
@@ -125,16 +125,16 @@
         $(document).ready(function() {
             $('#create-user-form').submit(function(e) {
                 let isValid = true;
-               
+                // Clear previous errors
                 $('.text-red-500').hide();
                 
-              
+                // Validate Name
                 if ($('#name').val() === '') {
                     $('#name-error').text('The name field is required.').removeClass('hidden').show();
                     isValid = false;
                 }
                 
-               
+                // Validate Email
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if ($('#email').val() === '') {
                     $('#email-error').text('The email field is required.').removeClass('hidden').show();
@@ -144,13 +144,13 @@
                     isValid = false;
                 }
                 
-             
-                if ($('#phone').val() === '') {
+                // Validate Phone
+                if ($('#phone_number').val() === '') {
                     $('#phone-error').text('The phone field is required.').removeClass('hidden').show();
                     isValid = false;
                 }
                 
-               
+                // Validate Password
                 if ($('#password').val() === '') {
                     $('#password-error').text('The password field is required.').removeClass('hidden').show();
                     isValid = false;
@@ -159,32 +159,32 @@
                     isValid = false;
                 }
                 
-                
+                // Validate Password Confirmation
                 if ($('#password').val() !== $('#password_confirmation').val()) {
                     $('#password_confirmation-error').text('The password confirmation does not match.').removeClass('hidden').show();
                     isValid = false;
                 }
                 
-               
+                // Validate Gender
                 if (!$('input[name="gender"]:checked').val()) {
                     $('#gender-error').text('Please select a gender.').removeClass('hidden').show();
                     isValid = false;
                 }
                 
-              
+                // Validate Hobbies
                 if (!$('input[name="hobbies[]"]:checked').length) {
                     $('#hobbies-error').text('Please select at least one hobby.').removeClass('hidden').show();
                     isValid = false;
                 }
                 
-               
+                // Validate Role
                 if ($('#role_id').val() === '') {
                     $('#role_id-error').text('Please select a role.').removeClass('hidden').show();
                     isValid = false;
                 }
                 
                 if (!isValid) {
-                    e.preventDefault(); 
+                    e.preventDefault(); // Prevent form submission
                 }
             });
         });

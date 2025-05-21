@@ -32,8 +32,8 @@
 
                         <div class="mb-4">
                             <label for="phone" class="block text-gray-700 text-sm font-bold mb-2">Phone Number:</label>
-                            <input type="text" name="phone_number" id="phone_number" value="{{ old('phone', $user->phone) }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('phone') border-red-500 @enderror">
-                            @error('phone')
+                            <input type="text" name="phone_number" id="phone_number" value="{{ old('phone_number', $user->phone_number) }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('phone') border-red-500 @enderror">
+                            @error('phone_number')
                                 <p class="text-red-500 text-xs italic">{{ $message }}</p>
                             @enderror
                             <span id="phone-error" class="text-red-500 text-xs italic hidden"></span>
@@ -113,10 +113,10 @@
                         </div>
 
                         <div class="flex items-center justify-between">
-                            <a type="submit" class="btn btn-success hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" id="submit-btn">
+                            <button type="submit" class="btn btn-primary hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" id="submit-btn">
                                 Update User
-                                            </a>
-                            <a href="{{ route('users.index') }}" class="bg-gray-500 btn btn-danger hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            </button>
+                            <a href="{{ route('users.index') }}" class="bg-gray-500 btn btn-danger bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                                 Cancel
                             </a>
                         </div>
@@ -131,16 +131,16 @@
         $(document).ready(function() {
             $('#edit-user-form').submit(function(e) {
                 let isValid = true;
-                
+                // Clear previous errors
                 $('.text-red-500').hide();
                 
-           
+                // Validate Name
                 if ($('#name').val() === '') {
                     $('#name-error').text('The name field is required.').removeClass('hidden').show();
                     isValid = false;
                 }
                 
-             
+                // Validate Email
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if ($('#email').val() === '') {
                     $('#email-error').text('The email field is required.').removeClass('hidden').show();
@@ -150,31 +150,35 @@
                     isValid = false;
                 }
                 
-               
-                if ($('#phone').val() === '') {
+              
+                if ($('#phone_number').val() === '') {
                     $('#phone-error').text('The phone field is required.').removeClass('hidden').show();
                     isValid = false;
                 }
                 
-            
+                else if($('#phone_number').val().length>10){
+                    $('#phone-error').text('The phone Number should be only 10 digits').removeClass('hidden').show();
+                    isValid = false;
+                }
+             
                 if (!$('input[name="gender"]:checked').val()) {
                     $('#gender-error').text('Please select a gender.').removeClass('hidden').show();
                     isValid = false;
                 }
                 
-             
+               
                 if (!$('input[name="hobbies[]"]:checked').length) {
                     $('#hobbies-error').text('Please select at least one hobby.').removeClass('hidden').show();
                     isValid = false;
                 }
                 
-              
+                // Validate Role
                 if ($('#role_id').val() === '') {
                     $('#role_id-error').text('Please select a role.').removeClass('hidden').show();
                     isValid = false;
                 }
                 
-             
+              
                 if ($('#password').val() !== '') {
                     if ($('#password').val().length < 8) {
                         $('#password-error').text('The password must be at least 8 characters.').removeClass('hidden').show();
@@ -188,7 +192,7 @@
                 }
                 
                 if (!isValid) {
-                    e.preventDefault(); 
+                    e.preventDefault(); // Prevent form submission
                 }
             });
         });
