@@ -1,0 +1,231 @@
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('My Profile') }}
+        </h2>
+    </x-slot>
+
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 bg-white border-b border-gray-200">
+                    @if(session('success'))
+                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                            <span class="block sm:inline">{{ session('success') }}</span>
+                        </div>
+                    @endif
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Profile Information</h3>
+                            
+                            <form id="profile-form" action="{{ route('my-profile.update') }}" method="POST" class="bg-white rounded-lg">
+                                @csrf
+                                @method('PUT')
+                                
+                                <div class="mb-4">
+                                    <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
+                                    <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('name') border-red-500 @enderror">
+                                    @error('name')
+                                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                                    @enderror
+                                    <span id="name-error" class="text-red-500 text-xs italic hidden"></span>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
+                                    <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('email') border-red-500 @enderror">
+                                    @error('email')
+                                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                                    @enderror
+                                    <span id="email-error" class="text-red-500 text-xs italic hidden"></span>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="phone" class="block text-gray-700 text-sm font-bold mb-2">Phone Number:</label>
+                                    <input type="text" name="phone" id="phone" value="{{ old('phone', $user->phone) }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('phone') border-red-500 @enderror">
+                                    @error('phone')
+                                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                                    @enderror
+                                    <span id="phone-error" class="text-red-500 text-xs italic hidden"></span>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2">Gender:</label>
+                                    <div class="mt-2">
+                                        <label class="inline-flex items-center">
+                                            <input type="radio" class="form-radio" name="gender" value="male" {{ old('gender', $user->gender) == 'male' ? 'checked' : '' }}>
+                                            <span class="ml-2">Male</span>
+                                        </label>
+                                        <label class="inline-flex items-center ml-6">
+                                            <input type="radio" class="form-radio" name="gender" value="female" {{ old('gender', $user->gender) == 'female' ? 'checked' : '' }}>
+                                            <span class="ml-2">Female</span>
+                                        </label>
+                                        <label class="inline-flex items-center ml-6">
+                                            <input type="radio" class="form-radio" name="gender" value="other" {{ old('gender', $user->gender) == 'other' ? 'checked' : '' }}>
+                                            <span class="ml-2">Other</span>
+                                        </label>
+                                    </div>
+                                    @error('gender')
+                                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                                    @enderror
+                                    <span id="gender-error" class="text-red-500 text-xs italic hidden"></span>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="block text-gray-700 text-sm font-bold mb-2">Hobbies:</label>
+                                    <div class="mt-2">
+                                        @foreach($hobbies as $hobby)
+                                            <label class="inline-flex items-center mr-4 mb-2">
+                                                <input type="checkbox" class="form-checkbox" name="hobbies[]" value="{{ $hobby->id }}" 
+                                                    {{ (is_array(old('hobbies')) && in_array($hobby->id, old('hobbies'))) || 
+                                                       (empty(old('hobbies')) && $user->hobbies->contains($hobby->id)) ? 'checked' : '' }}>
+                                                <span class="ml-2">{{ $hobby->name }}</span>
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                    @error('hobbies')
+                                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                                    @enderror
+                                    <span id="hobbies-error" class="text-red-500 text-xs italic hidden"></span>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="role" class="block text-gray-700 text-sm font-bold mb-2">Role:</label>
+                                    <input type="text" value="{{ $user->role->name ?? 'N/A' }}" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-100" readonly>
+                                </div>
+                                
+                                <div class="flex items-center">
+                                    <button type="submit" class="btn btn-success bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" id="update-profile-btn">
+                                        Update Profile
+                                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Change Password</h3>
+                            
+                            <form id="change-password-form" action="{{ route('my-profile.change-password') }}" method="POST" class="bg-white p-6 rounded-lg shadow-md">
+                                @csrf
+                                
+                                <div class="mb-4">
+                                    <label for="current_password" class="block text-gray-700 text-sm font-bold mb-2">Current Password:</label>
+                                    <input type="password" name="current_password" id="current_password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('current_password') border-red-500 @enderror">
+                                    @error('current_password')
+                                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                                    @enderror
+                                    <span id="current_password-error" class="text-red-500 text-xs italic hidden"></span>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="password" class="block text-gray-700 text-sm font-bold mb-2">New Password:</label>
+                                    <input type="password" name="password" id="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('password') border-red-500 @enderror">
+                                    @error('password')
+                                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                                    @enderror
+                                    <span id="password-error" class="text-red-500 text-xs italic hidden"></span>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="password_confirmation" class="block text-gray-700 text-sm font-bold mb-2">Confirm New Password:</label>
+                                    <input type="password" name="password_confirmation" id="password_confirmation" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    <span id="password_confirmation-error" class="text-red-500 text-xs italic hidden"></span>
+                                </div>
+                                
+                                <div class="flex items-center">
+                                    <button type="submit" class="btn btn-success bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" id="change-password-btn">
+                                        Change Password
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @push('scripts')
+    <script>
+        $(document).ready(function() {
+           
+            $('#profile-form').submit(function(e) {
+                let isValid = true;
+               
+                $('.text-red-500').hide();
+                
+               
+                if ($('#name').val() === '') {
+                    $('#name-error').text('The name field is required.').removeClass('hidden').show();
+                    isValid = false;
+                }
+                
+                
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if ($('#email').val() === '') {
+                    $('#email-error').text('The email field is required.').removeClass('hidden').show();
+                    isValid = false;
+                } else if (!emailRegex.test($('#email').val())) {
+                    $('#email-error').text('Please enter a valid email address.').removeClass('hidden').show();
+                    isValid = false;
+                }
+                
+              
+                if ($('#phone').val() === '') {
+                    $('#phone-error').text('The phone field is required.').removeClass('hidden').show();
+                    isValid = false;
+                }
+                
+               
+                if (!$('input[name="gender"]:checked').val()) {
+                    $('#gender-error').text('Please select a gender.').removeClass('hidden').show();
+                    isValid = false;
+                }
+                
+              
+                if (!$('input[name="hobbies[]"]:checked').length) {
+                    $('#hobbies-error').text('Please select at least one hobby.').removeClass('hidden').show();
+                    isValid = false;
+                }
+                
+                if (!isValid) {
+                    e.preventDefault(); 
+                }
+            });
+            
+          
+            $('#change-password-form').submit(function(e) {
+                let isValid = true;
+             
+                $('.text-red-500').hide();
+                
+                
+                if ($('#current_password').val() === '') {
+                    $('#current_password-error').text('The current password field is required.').removeClass('hidden').show();
+                    isValid = false;
+                }
+                
+               
+                if ($('#password').val() === '') {
+                    $('#password-error').text('The new password field is required.').removeClass('hidden').show();
+                    isValid = false;
+                } else if ($('#password').val().length < 8) {
+                    $('#password-error').text('The password must be at least 8 characters.').removeClass('hidden').show();
+                    isValid = false;
+                }
+                
+                
+                if ($('#password').val() !== $('#password_confirmation').val()) {
+                    $('#password_confirmation-error').text('The password confirmation does not match.').removeClass('hidden').show();
+                    isValid = false;
+                }
+                
+                if (!isValid) {
+                    e.preventDefault(); 
+                }
+            });
+        });
+    </script>
+    @endpush
+</x-app-layout>
