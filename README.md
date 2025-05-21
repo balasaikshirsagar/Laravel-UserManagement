@@ -1,14 +1,14 @@
-Steps to Run the Project - 
-git clone <repo-url>
-cd <project-folder>
-composer install
-cp .env.example .env
-php artisan key:generate
-Set Up Database
-php artisan migrate
-npm install
-npm run dev  # or "npm run build"
-php artisan serve
+1.Steps to Run the Project - 
+2.git clone <repo-url>
+3.cd <project-folder>
+4.composer install
+5.cp .env.example .env
+6.php artisan key:generate
+7.Set Up Database
+8.php artisan migrate
+9.npm install
+10.npm run dev  # or "npm run build"
+11.php artisan serve
 
 
 .env - database configuration
